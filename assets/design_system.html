@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Vibe Design System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700|JetBrains+Mono:400,700|Space+Grotesk:300,400,500,600,700&display=swap" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        vibe: {
+                            main: '#EAEAE5',
+                            panel: '#F4F4F0',
+                            dark: '#1C1C1C',
+                            muted: '#6B6B6B',
+                            border: '#D1D1CA',
+                            accent: '#ccff00',
+                            danger: '#ff453a',
+                            success: '#00cc66'
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 15s linear infinite',
+                        'blob': 'blob 10s infinite',
+                        'marquee': 'marquee 30s linear infinite',
+                        'shimmer': 'shimmer 2.5s infinite',
+                        'float': 'float 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        shimmer: {
+                            from: { transform: 'translateX(-100%) skewX(-15deg)' },
+                            to: { transform: 'translateX(200%) skewX(-15deg)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #EAEAE5;
+            color: #1C1C1C;
+            overflow-x: hidden;
+        }
+
+        /* Abstract Grid Background */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(28, 28, 28, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(28, 28, 28, 0.05) 1px, transparent 1px);
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Masked Text Reveal */
+        .text-reveal-wrapper {
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+        .text-reveal-content {
+            transform: translateY(110%);
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+            display: inline-block;
+            will-change: transform, opacity;
+        }
+        .reveal-active .text-reveal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Flashlight Effect */
+        .flashlight-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .flashlight-card::before {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.6),
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .flashlight-card.dark-mode::before {
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(204, 255, 0, 0.15),
+                transparent 40%
+            );
+        }
+        .flashlight-card:hover::before { opacity: 1; }
+
+        /* Beam Buttons */
+        .beam-button {
+            position: relative;
+            overflow: hidden;
+        }
+        .beam-button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            transition: 0s;
+        }
+        .beam-button:hover::after {
+            animation: shimmer 1.5s infinite;
+        }
+
+        .border-beam {
+            position: relative;
+            background: inherit;
+        }
+        .border-beam::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: conic-gradient(from var(--angle, 0deg), transparent 70%, #ccff00 100%);
+            z-index: -1;
+            animation: rotateBeam 4s linear infinite;
+        }
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        @keyframes rotateBeam {
+            to { --angle: 360deg; }
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .dark-glass {
+            background: rgba(28, 28, 28, 0.85);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ambient Noise Overlay */
+        .noise-bg {
+            position: fixed;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Input Floating Label */
+        .input-group { position: relative; }
+        .input-group input, .input-group textarea { 
+            padding: 1.5rem 1rem 0.5rem; 
+            outline: none;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid var(--vibe-border);
+            border-radius: 0.375rem;
+            transition: all 0.3s;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #1C1C1C;
+            background: #fff;
+        }
+        .input-group label {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.2s ease;
+            pointer-events: none;
+            color: #6B6B6B;
+            font-size: 0.875rem;
+        }
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label,
+        .input-group textarea:focus ~ label,
+        .input-group textarea:not(:placeholder-shown) ~ label {
+            top: 0.8rem;
+            font-size: 0.65rem;
+            color: #1C1C1C;
+        }
+
+        /* Modals & Tooltips */
+        .modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .tooltip-wrapper { position: relative; display: inline-block; cursor: pointer; }
+        .tooltip-content {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50;
+        }
+        .tooltip-wrapper:hover .tooltip-content {
+            transform: translateX(-50%) scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+
+        /* Nav Load */
+        .nav-load {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.8s ease-out;
+        }
+        .nav-load.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-vibe-dark selection:text-white bg-grid pb-20">
+
+    <div class="noise-bg"></div>
+
+    <!-- Layout Container -->
+    <div class="max-w-[1400px] mx-auto border-x border-vibe-border relative bg-vibe-main/80 backdrop-blur-sm min-h-screen shadow-2xl">
+        
+        <!-- Vertical Grid Overlay -->
+        <div class="absolute inset-0 pointer-events-none grid grid-cols-1 md:grid-cols-12 gap-0 z-0 h-full w-full opacity-40">
+            <div class="hidden md:block md:col-span-3 border-r border-vibe-border h-full"></div>
+            <div class="hidden md:block md:col-span-6 border-r border-vibe-border h-full"></div>
+            <div class="hidden md:block md:col-span-3 h-full"></div>
+        </div>
+
+        <!-- Sticky Nav -->
+        <header class="sticky top-0 z-50 glass-panel border-b border-vibe-border nav-load">
+            <div class="flex justify-between items-center px-6 py-5">
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#hero" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">Start</a>
+                    <a href="#typography" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">Type</a>
+                    <a href="#colors" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">Colors</a>
+                </div>
+                
+                <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 cursor-pointer group">
+                    <div class="w-8 h-8 rounded-full bg-vibe-dark text-vibe-accent flex items-center justify-center group-hover:rotate-180 transition-transform duration-700">
+                        <iconify-icon icon="solar:programming-bold-duotone"></iconify-icon>
+                    </div>
+                    <span class="font-display font-bold tracking-tight text-xl">VIBE<span class="text-vibe-muted font-light">SYSTEM</span></span>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#components" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">UI</a>
+                    <a href="#icons" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">Icons</a>
+                    <a href="#animations" class="text-xs font-mono uppercase tracking-widest text-vibe-dark hover:text-vibe-muted transition-colors">Motion</a>
+                </div>
+                <!-- Mobile menu placeholder -->
+                <div class="md:hidden">
+                    <iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl text-vibe-dark"></iconify-icon>
+                </div>
+            </div>
+        </header>
+
+        <!-- 01 Hero Fold -->
+        <section id="hero" class="relative z-10 grid grid-cols-1 md:grid-cols-12 border-b border-vibe-border min-h-[85vh] overflow-hidden">
+            <!-- Animated Ambient Blobs -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-vibe-accent/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-emerald-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-1/4 left-1/2 w-80 h-80 bg-vibe-dark/5 rounded-full mix-blend-multiply filter blur-3xl animate-blob" style="animation-delay: 4s;"></div>
+
+            <!-- Left Main Area -->
+            <div class="col-span-1 md:col-span-9 p-8 md:p-16 flex flex-col justify-center border-b md:border-b-0 md:border-r border-vibe-border relative">
+                
+                <div class="mb-4 reveal">
+                    <span class="inline-block px-3 py-1 border border-vibe-dark/20 rounded-full text-xs font-mono bg-white/50 backdrop-blur animate-float uppercase">Design Language v2.0</span>
+                </div>
+                
+                <h1 class="text-6xl md:text-8xl lg:text-[8rem] font-display font-semibold tracking-tighter leading-[0.9] text-vibe-dark mb-6">
+                    <span class="text-reveal-wrapper"><span class="text-reveal-content delay-100">Elevating</span></span><br/>
+                    <span class="text-reveal-wrapper"><span class="text-reveal-content delay-200">Creative</span></span><br/>
+                    <span class="text-reveal-wrapper"><span class="text-reveal-content delay-300 text-vibe-muted">Boundaries.</span></span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-vibe-muted max-w-2xl reveal delay-400 mb-10 leading-relaxed font-sans">
+                    A comprehensive UI toolkit engineered for high-performance interfaces. Blending elegant typography, dark-glass aesthetics, and kinetic motion.
+                </p>
+                
+                <div class="flex flex-wrap items-center gap-4 reveal delay-500">
+                    <button class="beam-button px-8 py-4 bg-vibe-dark text-white rounded-full font-medium text-sm flex items-center gap-3 group hover:bg-stone-800 transition-colors shadow-xl">
+                        Explore Components
+                        <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                            <iconify-icon icon="solar:arrow-right-linear" class="text-white"></iconify-icon>
+                        </div>
+                    </button>
+                    
+                    <button class="px-8 py-4 glass-panel text-vibe-dark rounded-full font-medium text-sm border-vibe-dark/30 hover:bg-white transition-colors duration-300">
+                        View Documentation
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Stats / Features -->
+            <div class="col-span-1 md:col-span-3 grid grid-rows-3 h-full bg-vibe-panel/80 backdrop-blur z-10">
+                <div class="row-span-1 border-b border-vibe-border p-8 flex flex-col justify-between reveal delay-300 group hover:bg-white transition-colors">
+                    <div class="text-vibe-muted group-hover:text-vibe-accent transition-colors">
+                        <iconify-icon icon="solar:cpu-line-duotone" class="text-4xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <h3 class="text-5xl font-display font-semibold tracking-tight">42+</h3>
+                        <p class="text-xs font-mono uppercase mt-2 text-vibe-muted">Kinetic Elements</p>
+                    </div>
+                </div>
+                
+                <div class="row-span-1 border-b border-vibe-border p-8 flex flex-col justify-between reveal delay-400 group hover:bg-white transition-colors relative overflow-hidden">
+                    <div class="absolute top-4 right-4 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <iconify-icon icon="solar:star-fall-bold-duotone" class="text-5xl text-vibe-accent"></iconify-icon>
+                    </div>
+                    <div class="text-vibe-muted group-hover:text-vibe-dark transition-colors relative z-10">
+                        <iconify-icon icon="solar:pallete-2-linear" class="text-4xl"></iconify-icon>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-5xl font-display font-semibold tracking-tight">08</h3>
+                        <p class="text-xs font-mono uppercase mt-2 text-vibe-muted">Color Tokens</p>
+                    </div>
+                </div>
+                
+                <div class="row-span-1 p-8 flex flex-col justify-between reveal delay-500 group dark-glass text-white border-none flashlight-card dark-mode">
+                    <div class="text-white/50 group-hover:text-white transition-colors relative z-10">
+                        <iconify-icon icon="solar:code-file-linear" class="text-4xl"></iconify-icon>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-5xl font-display font-semibold tracking-tight">300k</h3>
+                        <p class="text-xs font-mono uppercase mt-2 text-white/50">Downloads / 2024</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marquee Divider -->
+        <div class="border-b border-vibe-border py-4 bg-vibe-accent/10 overflow-hidden reveal">
+            <div class="flex whitespace-nowrap animate-marquee font-mono text-sm uppercase tracking-widest text-vibe-dark">
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Built for High Performance</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Kinetic Animations Included</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Fully Accessible Structure</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Dark Mode Ready Composites</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Built for High Performance</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Kinetic Animations Included</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Fully Accessible Structure</span>
+                <span class="mx-6 flex items-center gap-2"><iconify-icon icon="solar:verified-check-linear"></iconify-icon> Dark Mode Ready Composites</span>
+            </div>
+        </div>
+
+        <!-- 02 Typography -->
+        <section id="typography" class="relative z-10 border-b border-vibe-border bg-vibe-main">
+            <div class="p-8 md:p-12 border-b border-vibe-border flex items-end justify-between reveal">
+                <div>
+                    <span class="text-xs font-mono uppercase text-vibe-muted block mb-2">Section 01</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-medium tracking-tight">Typography</h2>
+                </div>
+                <div class="hidden md:block text-right">
+                    <div class="text-xs font-mono text-vibe-dark border border-vibe-dark px-3 py-1 rounded-full bg-white">Local / Google Fonts CDN (Weights: 300-800)</div>
+                </div>
+            </div>
+
+            <!-- Headers -->
+            <div class="grid grid-cols-1">
+                <!-- Display H1 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 border-b border-vibe-border p-8 md:p-12 items-baseline reveal reveal-active hover:bg-white/50 transition-colors">
+                    <div class="col-span-3 text-xs font-mono text-vibe-muted uppercase tracking-widest mb-4 md:mb-0">Display H1</div>
+                    <div class="col-span-7">
+                        <h1 class="text-6xl md:text-[5rem] font-display font-semibold tracking-tighter leading-none">Space Grotesk</h1>
+                    </div>
+                    <div class="col-span-2 text-left md:text-right mt-4 md:mt-0">
+                        <p class="text-xs font-mono text-vibe-muted block">Font: Space Grotesk</p>
+                        <p class="text-xs font-mono text-vibe-muted block leading-loose">W: 600 / S: 5rem / LS: -0.05em</p>
+                    </div>
+                </div>
+
+                <!-- H2 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 border-b border-vibe-border p-8 md:p-12 items-baseline reveal hover:bg-white/50 transition-colors">
+                    <div class="col-span-3 text-xs font-mono text-vibe-muted uppercase tracking-widest mb-4 md:mb-0">Heading H2</div>
+                    <div class="col-span-7">
+                        <h2 class="text-4xl md:text-5xl font-display font-medium tracking-tight leading-tight">Interaction Design</h2>
+                    </div>
+                    <div class="col-span-2 text-left md:text-right mt-4 md:mt-0">
+                        <p class="text-xs font-mono text-vibe-muted block">Font: Space Grotesk</p>
+                        <p class="text-xs font-mono text-vibe-muted block leading-loose">W: 500 / S: 3rem / LS: -0.025em</p>
+                    </div>
+                </div>
+
+                <!-- H3 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 border-b border-vibe-border p-8 md:p-12 items-baseline reveal hover:bg-white/50 transition-colors">
+                    <div class="col-span-3 text-xs font-mono text-vibe-muted uppercase tracking-widest mb-4 md:mb-0">Heading H3</div>
+                    <div class="col-span-7">
+                        <h3 class="text-3xl md:text-4xl font-display font-medium tracking-normal">Component Systems</h3>
+                    </div>
+                    <div class="col-span-2 text-left md:text-right mt-4 md:mt-0">
+                        <p class="text-xs font-mono text-vibe-muted block">Font: Space Grotesk</p>
+                        <p class="text-xs font-mono text-vibe-muted block leading-loose">W: 500 / S: 2.25rem / LS: 0</p>
+                    </div>
+                </div>
+
+                <!-- Body LG / Body -->
+                <div class="grid grid-cols-1 md:grid-cols-12 border-b border-vibe-border p-8 md:p-12 items-baseline reveal hover:bg-white/50 transition-colors max-w-full">
+                    <div class="col-span-3 text-xs font-mono text-vibe-muted uppercase tracking-widest mb-4 md:mb-0">Body Set</div>
+                    <div class="col-span-7 max-w-2xl space-y-6">
+                        <div>
+                            <p class="text-lg md:text-xl font-sans text-vibe-dark leading-relaxed"><strong>Body Large.</strong> The intersection of emotion and logic is where great design happens. We utilize sans-serifs for unmatched legibility at scale.</p>
+                            <span class="text-[0.65rem] font-mono text-vibe-muted mt-2 block">Font: Inter / W: 400 / S: 1.125rem / LH: 1.625</span>
+                        </div>
+                        <div>
+                            <p class="text-base font-sans text-vibe-muted leading-relaxed"><strong>Body Base.</strong> This is the standard content reading size for paragraphs, descriptions, and long-form content across the platform. Optimal line length is 60-80 characters.</p>
+                            <span class="text-[0.65rem] font-mono text-vibe-muted mt-2 block">Font: Inter / W: 400 / S: 1rem / LH: 1.5</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-sans text-vibe-muted leading-relaxed"><strong>Body Small.</strong> Used for captions, secondary descriptions, and helper text inside form elements.</p>
+                            <span class="text-[0.65rem] font-mono text-vibe-muted mt-2 block">Font: Inter / W: 400 / S: 0.875rem / LH: 1.25</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Labels -->
+                <div class="grid grid-cols-1 md:grid-cols-12 p-8 md:p-12 items-center reveal hover:bg-white/50 transition-colors">
+                    <div class="col-span-3 text-xs font-mono text-vibe-muted uppercase tracking-widest mb-4 md:mb-0">Mono Label</div>
+                    <div class="col-span-7">
+                        <span class="text-xs font-mono uppercase tracking-[0.2em] text-vibe-dark bg-white border border-vibe-border px-3 py-1 rounded">System Meta Data</span>
+                    </div>
+                    <div class="col-span-2 text-left md:text-right mt-4 md:mt-0">
+                        <p class="text-xs font-mono text-vibe-muted block">Font: JetBrains Mono</p>
+                        <p class="text-xs font-mono text-vibe-muted block leading-loose">W: 400 / S: 0.75rem / T: Upper</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03 Colors -->
+        <section id="colors" class="relative z-10 border-b border-vibe-border bg-vibe-panel/50">
+            <div class="p-8 md:p-12 border-b border-vibe-border reveal">
+                <span class="text-xs font-mono uppercase text-vibe-muted block mb-2">Section 02</span>
+                <h2 class="text-4xl md:text-5xl font-display font-medium tracking-tight">Color System</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 border-b border-vibe-border">
+                <!-- Color Cards -->
+                <div class="col-span-1 p-6 md:p-8 border-r border-b lg:border-b-0 border-vibe-border bg-[#EAEAE5] flex flex-col justify-between aspect-square flashlight-card group">
+                    <div class="text-vibe-dark font-bold relative z-10">Main Base</div>
+                    <div class="relative z-10 mt-8">
+                        <div class="font-mono text-[10px] text-vibe-muted uppercase tracking-wider mb-1">Background</div>
+                        <div class="font-mono text-xs text-vibe-dark">#EAEAE5</div>
+                        <div class="font-mono text-xs text-vibe-muted mt-1">RGB 234,234,229</div>
+                    </div>
+                </div>
+                <!-- Dark -->
+                <div class="col-span-1 p-6 md:p-8 border-r border-b lg:border-b-0 border-vibe-border bg-[#1C1C1C] flex flex-col justify-between aspect-square flashlight-card dark-mode group">
+                    <div class="text-white font-bold relative z-10">Obsidian Dark</div>
+                    <div class="relative z-10 mt-8">
+                        <div class="font-mono text-[10px] text-white/50 uppercase tracking-wider mb-1">Text / Panel</div>
+                        <div class="font-mono text-xs text-white">#1C1C1C</div>
+                        <div class="font-mono text-xs text-white/50 mt-1">RGB 28,28,28</div>
+                    </div>
+                </div>
+                <!-- Accent -->
+                <div class="col-span-1 p-6 md:p-8 border-r border-b md:border-b-0 border-vibe-border bg-[#ccff00] flex flex-col justify-between aspect-square flashlight-card group">
+                    <div class="text-vibe-dark font-bold relative z-10">Lime Accent</div>
+                    <div class="relative z-10 mt-8">
+                        <div class="font-mono text-[10px] text-vibe-dark/60 uppercase tracking-wider mb-1">Action / Focus</div>
+                        <div class="font-mono text-xs text-vibe-dark">#CCFF00</div>
+                        <div class="font-mono text-xs text-vibe-dark/60 mt-1">RGB 204,255,0</div>
+                    </div>
+                </div>
+                <!-- Border -->
+                <div class="col-span-1 p-6 md:p-8 border-r lg:border-b-0 border-b md:border-b border-vibe-border bg-[#D1D1CA] flex flex-col justify-between aspect-square flashlight-card group">
+                    <div class="text-vibe-dark font-bold relative z-10">Stone Border</div>
+                    <div class="relative z-10 mt-8">
+                        <div class="font-mono text-[10px] text-vibe-muted uppercase tracking-wider mb-1">Divider</div>
+                        <div class="font-mono text-xs text-vibe-dark">#D1D1CA</div>
+                        <div class="font-mono text-xs text-vibe-muted mt-1">RGB 209,209,202</div>
+                    </div>
+                </div>
+                <!-- Success -->
+                <div class="col-span-1 p-6 md:p-8 bg-[#00cc66] flex flex-col justify-between aspect-square flashlight-card dark-mode group col-span-2 md:col-span-1">
+                    <div class="text-white font-bold relative z-10">Emerald Success</div>
+                    <div class="relative z-10 mt-8">
+                        <div class="font-mono text-[10px] text-white/70 uppercase tracking-wider mb-1">Feedback</div>
+                        <div class="font-mono text-xs text-white">#00CC66</div>
+                        <div class="font-mono text-xs text-white/70 mt-1">RGB 0,204,102</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-8 md:p-12">
+                <h3 class="text-sm font-bold uppercase tracking-widest text-vibe-dark mb-6">Gradient Participation</h3>
+                <div class="h-24 rounded-lg w-full bg-gradient-to-r from-vibe-dark via-vibe-muted to-vibe-border flex items-center justify-between px-6 shadow-inner reveal">
+                    <span class="text-white/50 font-mono text-xs">Dark Flow</span>
+                    <span class="text-vibe-dark/50 font-mono text-xs">Stone End</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04 Components -->
+        <section id="components" class="relative z-10 border-b border-vibe-border bg-white">
+            <div class="p-8 md:p-12 border-b border-vibe-border reveal">
+                <span class="text-xs font-mono uppercase text-vibe-muted block mb-2">Section 03</span>
+                <h2 class="text-4xl md:text-5xl font-display font-medium tracking-tight">UI Components</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                
+                <!-- Buttons & Tooltips -->
+                <div class="p-8 md:p-12 border-b md:border-b-0 md:border-r border-vibe-border">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-vibe-dark mb-10 reveal">Buttons & Actions</h3>
+                    <div class="space-y-10">
+                        <div class="flex items-center gap-6 reveal delay-100">
+                            <button class="beam-button px-6 py-3 bg-vibe-dark text-white rounded text-sm font-medium flex items-center gap-2 group shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                                Action Beam
+                                <iconify-icon icon="solar:bolt-bold-duotone" class="text-vibe-accent"></iconify-icon>
+                            </button>
+                            <span class="text-[10px] font-mono text-vibe-muted uppercase">Primary</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-6 reveal delay-200">
+                            <button class="border-beam px-6 py-3 bg-white text-vibe-dark rounded font-medium text-sm flex items-center gap-2 hover:bg-vibe-panel transition-colors">
+                                Border Beam
+                                <iconify-icon icon="solar:magic-stick-3-bold-duotone" class="text-vibe-muted"></iconify-icon>
+                            </button>
+                            <span class="text-[10px] font-mono text-vibe-muted uppercase">Highlight</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-6 reveal delay-300">
+                            <div class="tooltip-wrapper">
+                                <button class="px-6 py-3 border border-vibe-dark text-vibe-dark rounded-full font-medium text-sm uppercase tracking-widest hover:bg-vibe-dark hover:text-white transition-colors duration-300">
+                                    Hover Me
+                                </button>
+                                <div class="tooltip-content bg-vibe-dark text-white text-xs px-3 py-2 rounded font-mono shadow-2xl whitespace-nowrap">
+                                    Tooltip Example
+                                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-vibe-dark rotate-45"></div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono text-vibe-muted uppercase">Tooltip</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-6 reveal delay-400">
+                            <button class="w-12 h-12 flex items-center justify-center rounded-full bg-vibe-panel text-vibe-dark hover:bg-vibe-accent hover:text-vibe-dark transition-colors duration-300 shadow-sm border border-vibe-border">
+                                <iconify-icon icon="solar:play-circle-bold-duotone" class="text-2xl"></iconify-icon>
+                            </button>
+                            <span class="text-[10px] font-mono text-vibe-muted uppercase">Icon Only</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inputs & Modals -->
+                <div class="p-8 md:p-12">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-vibe-dark mb-10 reveal">Form & Overlay</h3>
+                    <div class="space-y-10">
+                        <div class="input-group reveal delay-100">
+                            <input type="text" id="nameInput" placeholder=" " class="w-full text-sm font-sans" />
+                            <label for="nameInput">Full Name</label>
+                            <div class="mt-2 text-[10px] font-mono text-vibe-muted">Floating Label Input</div>
+                        </div>
+                        
+                        <div class="input-group reveal delay-200">
+                            <input type="password" id="passInput" placeholder=" " class="w-full text-sm font-sans border-vibedanger/50 focus:border-vibe-danger focus:ring-1 focus:ring-vibe-danger/20" value="wrongpass" />
+                            <label for="passInput" class="!text-vibe-danger !top-3 !text-[10px]">Password Error</label>
+                            <div class="mt-2 text-[10px] font-mono text-vibe-danger flex items-center gap-1">
+                                <iconify-icon icon="solar:close-circle-bold-duotone"></iconify-icon> Invalid combination
+                            </div>
+                        </div>
+
+                        <div class="reveal delay-300 relative">
+                            <button onclick="toggleModal()" class="w-full py-4 border border-dashed border-vibe-dark text-vibe-dark rounded font-mono text-sm uppercase tracking-widest hover:bg-vibe-panel transition-colors flex items-center justify-center gap-2">
+                                <iconify-icon icon="solar:window-frame-bold-duotone"></iconify-icon>
+                                Open Glass Modal
+                            </button>
+                            
+                            <!-- Internal Modal -->
+                            <div id="demo-modal" class="modal-overlay absolute inset-0 -mx-8 sm:-mx-12 -my-8 sm:-my-12 flex items-center justify-center z-50">
+                                <div class="absolute inset-0 bg-white/60 backdrop-blur-sm" onclick="toggleModal()"></div>
+                                <div class="modal-content relative bg-vibe-dark p-8 rounded shadow-2xl w-[90%] max-w-sm border border-white/10 text-white">
+                                    <button onclick="toggleModal()" class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
+                                        <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+                                    </button>
+                                    <iconify-icon icon="solar:confetti-minimalistic-bold-duotone" class="text-4xl text-vibe-accent mb-4"></iconify-icon>
+                                    <h4 class="text-2xl font-display font-medium mb-2">Access Granted</h4>
+                                    <p class="text-sm text-white/70 mb-6 leading-relaxed">This modal uses the opacity and scale transform cubic-bezier transitions from the motion system.</p>
+                                    <button onclick="toggleModal()" class="w-full py-3 bg-vibe-accent text-vibe-dark rounded font-medium text-sm hover:bg-white transition-colors">Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cards & Sections Preview -->
+            <div class="border-t border-vibe-border">
+                <div class="p-8 md:p-12">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-vibe-dark mb-10 reveal">Surfaces & Badges</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Glass Card -->
+                        <div class="p-8 glass-panel rounded-xl reveal delay-100 flex flex-col justify-between min-h-[240px] group cursor-pointer hover:border-vibe-dark/50 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-white border border-vibe-border rounded-full text-[10px] font-mono uppercase text-vibe-dark">New Component</span>
+                                <iconify-icon icon="solar:star-ring-bold-duotone" class="text-2xl text-vibe-accent group-hover:rotate-45 transition-transform duration-500"></iconify-icon>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-display tracking-tight text-vibe-dark mb-2">Translucent Card</h4>
+                                <p class="text-sm text-vibe-muted">Hover to see interaction. This card relies on background blur filter.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Dark Hover Card -->
+                        <div class="p-8 bg-vibe-panel border border-vibe-border rounded-xl reveal delay-200 flex flex-col justify-between min-h-[240px] group cursor-pointer hover:bg-vibe-dark hover:text-white transition-all duration-500">
+                            <div class="flex justify-between items-start">
+                                <span class="px-3 py-1 bg-vibe-dark group-hover:bg-white/20 text-white rounded-full text-[10px] font-mono uppercase transition-colors duration-500">Dark State</span>
+                                <iconify-icon icon="solar:moon-bold-duotone" class="text-2xl text-vibe-muted group-hover:text-vibe-accent transition-colors duration-500"></iconify-icon>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-display tracking-tight mb-2">Kinetic Surface</h4>
+                                <p class="text-sm text-vibe-muted group-hover:text-white/60 transition-colors duration-500">The entire surface switches tone dynamically on hover.</p>
+                            </div>
+                        </div>
+
+                        <!-- Mini Navbar Preview -->
+                        <div class="p-8 bg-vibe-border/20 rounded-xl outline-dashed outline-1 outline-vibe-border reveal delay-300 md:col-span-2 lg:col-span-1 flex flex-col justify-center">
+                            <div class="w-full p-4 glass-panel rounded-lg flex items-center justify-between shadow-lg">
+                                <div class="flex gap-2 items-center">
+                                    <div class="w-6 h-6 rounded-full bg-vibe-dark"></div>
+                                    <div class="h-2 w-16 bg-vibe-dark/20 rounded-full"></div>
+                                </div>
+                                <div class="flex gap-3">
+                                    <div class="h-2 w-8 bg-vibe-dark/10 rounded-full"></div>
+                                    <div class="h-2 w-8 bg-vibe-dark/10 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-6">
+                                <p class="text-[10px] font-mono uppercase tracking-widest text-vibe-muted">Navbar Composite Shell</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 05 Icons & Imagery -->
+        <section id="icons" class="relative z-10 border-b border-vibe-border bg-vibe-main">
+            <div class="p-8 md:p-12 border-b border-vibe-border reveal">
+                <span class="text-xs font-mono uppercase text-vibe-muted block mb-2">Section 04</span>
+                <h2 class="text-4xl font-display font-medium tracking-tight">Iconography</h2>
+                <p class="text-sm font-sans text-vibe-muted mt-2">Using Solar Icons Duotone Set for maximum aesthetics.</p>
+            </div>
+            
+            <div class="p-8 md:p-12 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 justify-items-center">
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale group cursor-crosshair">
+                    <iconify-icon icon="solar:programming-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">programming</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-100 group cursor-crosshair">
+                    <iconify-icon icon="solar:cpu-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">cpu</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-200 group cursor-crosshair">
+                    <iconify-icon icon="solar:magic-stick-3-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">magic-stick</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-300 group cursor-crosshair">
+                    <iconify-icon icon="solar:layers-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">layers</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-400 group cursor-crosshair">
+                    <iconify-icon icon="solar:rocket-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">rocket</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-500 group cursor-crosshair">
+                    <iconify-icon icon="solar:bolt-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">bolt</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-500 group cursor-crosshair">
+                    <iconify-icon icon="solar:shield-check-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">shield</span>
+                </div>
+                <div class="flex flex-col items-center gap-4 reveal reveal-scale delay-500 group cursor-crosshair">
+                    <iconify-icon icon="solar:database-bold-duotone" class="text-4xl text-vibe-dark group-hover:text-vibe-accent group-hover:scale-125 transition-all"></iconify-icon>
+                    <span class="text-[10px] font-mono text-vibe-muted">database</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06 Animations & Motion System -->
+        <section id="animations" class="relative z-10">
+            <div class="p-8 md:p-12 border-b border-vibe-border bg-vibe-dark flex flex-col md:flex-row gap-8 items-center justify-between text-white reveal">
+                <div>
+                    <span class="text-xs font-mono uppercase text-vibe-accent block mb-2">Section 05</span>
+                    <h2 class="text-4xl font-display font-medium tracking-tight mb-4">Motion Architecture.</h2>
+                    <p class="text-white/70 max-w-lg leading-relaxed font-sans font-light">
+                        Our animations are built on a highly optimized cubic-bezier easing curve <code>(0.16, 1, 0.3, 1)</code> that provides snappy snapping yet elegant follow-through. Repetitive motion such as beams and blobs use purely linear/ease infinite loops for performance.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="w-24 h-24 rounded border border-white/20 flex flex-col items-center justify-center p-2 relative overflow-hidden group">
+                        <div class="absolute inset-x-0 bottom-0 h-1 bg-vibe-accent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
+                        <span class="text-[10px] font-mono text-white/50 text-center">Ease Out<br>Expo</span>
+                    </div>
+                     <div class="w-24 h-24 rounded bg-white/5 flex flex-col items-center justify-center p-2 relative group hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                        <span class="text-[10px] font-mono text-white/50 text-center">Spring<br>Scale</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Header animation
+            setTimeout(() => {
+                const header = document.querySelector('header');
+                if(header) header.classList.add('loaded');
+            }, 100);
+
+            // Observer for scroll animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Reveal child text wrappers
+                        const textWrappers = entry.target.querySelectorAll('.text-reveal-wrapper');
+                        if (textWrappers.length > 0 || entry.target.classList.contains('text-reveal-wrapper')) {
+                            entry.target.classList.add('reveal-active');
+                        }
+                        if (entry.target.tagName === 'H2' || entry.target.tagName === 'H1') {
+                            entry.target.classList.add('reveal-active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal, .reveal-scale').forEach(el => observer.observe(el));
+            document.querySelectorAll('h1, h2').forEach(el => {
+                if (el.querySelector('.text-reveal-content')) observer.observe(el);
+            });
+
+            // Flashlight card logic
+            document.addEventListener('mousemove', (e) => {
+                document.querySelectorAll('.flashlight-card').forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // Modal logic
+            window.toggleModal = function() {
+                const overlay = document.getElementById('demo-modal');
+                if(overlay) overlay.classList.toggle('active');
+            }
+        });
+    </script>
+
+</body>
+</html>
