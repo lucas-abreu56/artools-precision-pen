@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="pt-BR">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Artools Precision Pen</title>
-    
+
+    <!-- Favicon (SVG) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231C1C1C'/%3E%3Ctext x='50' y='72' font-family='Space Grotesk, sans-serif' font-size='70' font-weight='600' fill='%23FFFFFF' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+
     <!-- CSS Framework and Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700|JetBrains+Mono:400,700|Space+Grotesk:300,400,500,600,700&display=swap" rel="stylesheet" />
-    
+    <link
+        href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700|JetBrains+Mono:400,700|Space+Grotesk:300,400,500,600,700&display=swap"
+        rel="stylesheet" />
+
     <!-- GSAP & Lenis for animations -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
@@ -52,14 +58,27 @@
             }
         }
     </script>
-    
+
     <style>
         /* Lenis Smooth Scroll Setup */
-        html.lenis, html.lenis body { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        .lenis.lenis-smooth [data-scroll-container] { -webkit-perspective: 1000px; perspective: 1000px; }
-        .lenis.lenis-scrolling iframe { pointer-events: none; }
-        
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-smooth [data-scroll-container] {
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
         body {
             background-color: #EAEAE5;
             color: #1C1C1C;
@@ -71,9 +90,9 @@
             background-color: #1C1C1C;
             color: #EAEAE5;
         }
-        
+
         body.dark-mode .bg-grid {
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         }
@@ -81,7 +100,7 @@
         /* Abstract Grid Background */
         .bg-grid {
             background-size: 40px 40px;
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(28, 28, 28, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(28, 28, 28, 0.05) 1px, transparent 1px);
             transition: background-image 0.5s ease;
@@ -95,7 +114,7 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
             transition: background-color 0.5s ease, border-color 0.5s ease;
         }
-        
+
         body.dark-mode .glass-panel {
             background: rgba(28, 28, 28, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -106,22 +125,31 @@
             position: relative;
             overflow: hidden;
         }
+
         .beam-button::after {
             content: '';
             position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             transform: skewX(-20deg);
             transition: 0s;
         }
+
         .beam-button:hover::after {
             animation: shimmer 1.5s infinite;
         }
-        
+
         @keyframes shimmer {
-            from { transform: translateX(-100%) skewX(-15deg); }
-            to { transform: translateX(300%) skewX(-15deg); }
+            from {
+                transform: translateX(-100%) skewX(-15deg);
+            }
+
+            to {
+                transform: translateX(300%) skewX(-15deg);
+            }
         }
 
         /* Typography Styles */
@@ -130,6 +158,7 @@
             -webkit-text-stroke: 1px #1C1C1C;
             transition: -webkit-text-stroke 0.5s ease;
         }
+
         body.dark-mode .outline-text {
             -webkit-text-stroke: 1px #EAEAE5;
         }
@@ -149,83 +178,30 @@
             z-index: 9999;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
-        
+
         /* Hero Section Adjustments */
         .hero-section {
             min-height: 100vh;
             display: flex;
             align-items: center;
         }
-        
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            animation: fadeIn 1s 2s forwards;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            color: var(--vibe-muted);
-            z-index: 30;
-        }
-        
-        body.dark-mode .scroll-indicator {
-            color: rgba(255, 255, 255, 0.5);
-            mix-blend-mode: difference;
-        }
-        
-        .scroll-indicator .line {
-            width: 1px;
-            height: 40px;
-            background: currentColor;
-            margin-top: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .scroll-indicator .line::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1C1C1C;
-            animation: scrollDown 2s infinite ease-in-out;
-            transform-origin: top;
-        }
-        
-        body.dark-mode .scroll-indicator .line::after {
-            background: rgba(255, 255, 255, 0.8);
-        }
-                
-        @keyframes scrollDown {
-            0% { transform: scaleY(0); }
-            50% { transform: scaleY(1); }
-            100% { transform: scaleY(0); transform-origin: bottom; }
-        }
-        
+
         @keyframes fadeIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
-        
+
         .gsap-reveal-btn {
             opacity: 0;
             transform: translateY(20px);
         }
-        
+
         .gsap-reveal-label {
             opacity: 0;
             clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
         }
-        
+
         .gsap-reveal-para {
             opacity: 0;
             transform: translateY(20px);
@@ -239,156 +215,446 @@
             width: 100vw;
             height: 100vh;
             z-index: 0;
+            /* Ensures it sits above body background color but below hero-content */
             overflow: hidden;
-            opacity: 0; /* Fade in when scrolling down */
-            pointer-events: none; /* Let clicks pass through to content */
+            opacity: 1;
+            /* Always visible */
+            pointer-events: none;
+            /* Let clicks pass through to content */
         }
-        
+
         #scroll-video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        /* Overlay to fade out content */
-        #content-overlay {
-            position: fixed;
-            inset: 0;
-            background: #EAEAE5;
-            z-index: 5; /* Between video and content */
-            pointer-events: none;
-            opacity: 1; /* Start fully visible, fade out to reveal video */
-            transition: background-color 0.5s ease;
-        }
-        
-        body.dark-mode #content-overlay {
-            background: #1C1C1C;
+            opacity: 0.8;
+            /* Subtle transparency so background grid can slightly peek through if needed */
         }
 
         #hero-content {
             position: relative;
             z-index: 10;
         }
-        
+
         #scroll-space {
-            height: 400vh; /* Plenty of space to scroll and scrub video */
+            height: 300vh;
+            /* Space to scroll and scrub video */
             position: relative;
-            z-index: -1;
+            z-index: -2;
         }
-        
     </style>
 </head>
+
 <body class="antialiased selection:bg-vibe-dark selection:text-white bg-grid">
 
     <div class="noise-bg z-50"></div>
 
     <!-- Sticky Nav -->
-    <header class="fixed top-0 w-full z-50 glass-panel border-b border-vibe-border nav-load transition-all duration-300">
+    <header
+        class="fixed top-0 w-full z-50 glass-panel border-b border-vibe-border nav-load transition-all duration-300">
         <div class="max-w-[1400px] mx-auto flex justify-between items-center px-6 py-5">
             <!-- Left Logo -->
             <div class="flex items-center">
-                <span class="font-display font-bold tracking-tight text-2xl uppercase text-vibe-dark dark:text-white transition-colors duration-500">ARTOOLS</span>
+                <span
+                    class="font-display font-bold tracking-tight text-2xl uppercase text-vibe-dark dark:text-white transition-colors duration-500">ARTOOLS</span>
             </div>
-            
+
             <!-- Center Navigation -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="#produto" class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
+                <a href="#hero-content"
+                    class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
                     Produto
-                    <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
+                    <span
+                        class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
                 </a>
-                <a href="#tecnologia" class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
+                <a href="#tecnologia"
+                    class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
                     Tecnologia
-                    <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
+                    <span
+                        class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
                 </a>
-                <a href="#beneficios" class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
+                <a href="#beneficios"
+                    class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
                     Benefícios
-                    <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
+                    <span
+                        class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#early-access"
+                    class="text-xs font-mono uppercase tracking-widest text-vibe-dark/80 dark:text-white/80 hover:text-vibe-dark dark:hover:text-white transition-colors relative group">
+                    Early Access
+                    <span
+                        class="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all group-hover:w-full"></span>
                 </a>
             </div>
-            
-            <!-- Right Theme Toggle -->
-            <div class="flex items-center justify-end">
-                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-vibe-dark/5 dark:hover:bg-white/10 transition-colors">
-                    <iconify-icon icon="solar:moon-bold-duotone" class="text-xl dark-icon"></iconify-icon>
-                    <iconify-icon icon="solar:sun-bold-duotone" class="text-xl light-icon hidden text-vibe-accent"></iconify-icon>
-                </button>
+
+            <!-- Right side placeholder -->
+            <div class="flex items-center justify-end w-10">
             </div>
         </div>
     </header>
 
     <!-- Fixed Video Backgound -->
     <div id="video-container">
-        <video id="scroll-video" muted playsinline preload="auto">
+        <video id="scroll-video" autoplay loop muted playsinline preload="auto"
+            class="w-full h-full object-cover opacity-80">
             <source src="assets/raw_files/Pen_writing_on_blank_notebook_delpmaspu_.mp4" type="video/mp4">
             Seu navegador não suporta a tag de vídeo.
         </video>
     </div>
-    
-    <!-- Transition Overlay that reveals the video -->
-    <div id="content-overlay"></div>
 
     <main id="main-content">
         <!-- Hero Content -->
-        <div id="hero-content" class="hero-section min-h-screen relative flex items-center max-w-[1400px] mx-auto px-6 pt-24 text-vibe-dark dark:text-white w-full">
-            <div class="w-full flex justify-center text-center pointer-events-auto">
-                <div class="flex flex-col items-center justify-center relative z-10 pb-20 lg:pb-0 max-w-4xl">
-                    <div class="gsap-reveal-label mb-8 inline-block">
-                        <span class="px-4 py-1 border border-vibe-dark/20 dark:border-white/20 rounded-full text-xs font-mono tracking-[0.2em] uppercase text-vibe-muted dark:text-white/60 bg-white/50 dark:bg-black/20 backdrop-blur-md shadow-sm">• PRECISION SERIES</span>
+        <div id="hero-content"
+            class="hero-section min-h-screen relative flex items-center max-w-[1400px] mx-auto px-6 pt-24 text-vibe-dark dark:text-white w-full">
+            <div class="w-full pointer-events-auto">
+                <div class="flex flex-col items-start justify-center relative z-10 pb-20 lg:pb-0 max-w-2xl text-left">
+                    <div class="gsap-reveal-label mb-6 inline-block">
+                        <span
+                            class="text-xs font-mono tracking-[0.2em] uppercase text-vibe-dark/60 dark:text-white/60 font-medium">•
+                            PRECISION SERIES</span>
                     </div>
-                    
-                    <h1 class="text-6xl md:text-8xl lg:text-[7rem] font-display font-semibold tracking-tighter leading-[1.05] mb-8 split-text" id="main-headline">
-                        A caneta<br/>
+
+                    <h1 class="text-6xl md:text-8xl lg:text-[7rem] font-display font-semibold tracking-tighter leading-[1] mb-6 split-text"
+                        id="main-headline">
+                        A caneta<br />
                         <span class="outline-text block my-2">mais tecnológica</span>
                         do mundo.
                     </h1>
-                    
-                    <p class="gsap-reveal-para text-xl md:text-2xl text-vibe-muted dark:text-white/70 max-w-2xl mb-12 leading-relaxed font-sans font-light">
-                        A Artools Precision Pen redefine o equilíbrio entre peso, fluxo e design. Feita para criadores que exigem perfeição em cada traço.
+
+                    <p
+                        class="gsap-reveal-para text-xl md:text-2xl text-vibe-muted dark:text-white/70 max-w-xl mb-10 leading-relaxed font-sans font-light">
+                        A Artools Precision Pen redefine o equilíbrio entre peso, fluxo e design. Feita para criadores
+                        que exigem perfeição em cada traço.
                     </p>
-                    
-                    <div class="flex flex-wrap items-center justify-center gap-6">
-                        <button class="gsap-reveal-btn beam-button px-8 py-4 bg-vibe-dark text-white dark:bg-white dark:text-black rounded-full font-medium text-sm flex items-center gap-3 group hover:scale-105 transition-all shadow-xl">
+
+                    <div class="flex flex-wrap items-center justify-start gap-4">
+                        <button
+                            class="gsap-reveal-btn beam-button px-8 py-4 bg-vibe-dark text-white dark:bg-white dark:text-black rounded-full font-medium text-sm flex items-center gap-3 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
                             Comprar Agora
-                            <div class="w-6 h-6 rounded-full bg-white/20 dark:bg-black/10 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                                <iconify-icon icon="solar:arrow-right-linear" class="text-current"></iconify-icon>
-                            </div>
                         </button>
-                        
-                        <button class="gsap-reveal-btn px-8 py-4 glass-panel rounded-full font-medium text-sm text-vibe-dark dark:text-white hover:bg-vibe-dark hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-300">
+
+                        <button
+                            class="gsap-reveal-btn px-8 py-4 bg-white dark:bg-transparent dark:border dark:border-white/20 rounded-full font-medium text-sm text-vibe-dark dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
                             Explorar ↓
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="scroll-indicator" id="scroll-indicator">
-            Scroll para descobrir
-            <div class="line"></div>
-        </div>
-        
-        <!-- Space to scroll down and scrub video -->
-        <div id="scroll-space"></div>
-        
+
+
+
     </main>
-    
-    <!-- Next Section -->
-    <section class="min-h-screen relative flex flex-col items-center justify-center bg-vibe-main dark:bg-black border-t border-vibe-border dark:border-white/10 z-20 transition-colors duration-500">
-        <div class="text-center px-6">
-        <span class="px-3 py-1 border border-vibe-dark/20 dark:border-white/20 rounded-full text-[10px] font-mono tracking-[0.2em] uppercase text-vibe-muted dark:text-white/50 mb-6 inline-block">• CONTINUE A JORNADA</span>
-        <h2 class="text-4xl md:text-6xl font-display font-medium text-vibe-dark dark:text-white mb-6">A fluidez não para.</h2>
-        <p class="text-vibe-muted dark:text-white/60 font-sans max-w-xl mx-auto text-lg">O design flui assim como a tinta no papel.</p>
+
+    <!-- Next Section - Benefícios (Design Absoluto) -->
+    <section id="tecnologia"
+        class="min-h-screen relative flex items-center justify-center bg-white dark:bg-vibe-dark z-20 transition-colors duration-500 py-32 overflow-hidden">
+
+        <div class="max-w-[1400px] w-full mx-auto px-6 relative h-[700px] flex items-center">
+
+            <!-- Slides Container -->
+            <div class="w-full h-full relative">
+
+                <!-- SLIDE 0: Caneta Mockup -->
+                <!-- SLIDE 0: Caneta Mockup -->
+                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+                    <!-- Left Image -->
+                    <div class="lg:col-span-6 w-full relative group">
+                        <div
+                            class="w-full h-[500px] md:h-[650px] rounded-3xl overflow-hidden shadow-2xl shadow-vibe-dark/5 dark:shadow-black/30 relative">
+                            <img src="assets/raw_files/caneta.png" alt="Detalhe de design da caneta Artools"
+                                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                            <div
+                                class="absolute inset-0 bg-black/10 mix-blend-multiply transition-opacity duration-500 group-hover:opacity-0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Content -->
+                    <div class="lg:col-span-5 flex flex-col items-start justify-center text-left">
+                        <div class="mb-6">
+                            <span
+                                class="text-[10px] font-mono tracking-[0.2em] uppercase text-vibe-muted dark:text-white/50 font-bold">
+                                Sobre o Design
+                            </span>
+                        </div>
+                        <h2
+                            class="text-5xl md:text-6xl lg:text-7xl font-display font-medium text-vibe-dark dark:text-white mb-8 leading-[1]">
+                            Mais do que<br />
+                            <span class="text-vibe-muted dark:text-white/40">um instrumento.</span>
+                        </h2>
+                        <p
+                            class="text-lg md:text-xl text-vibe-muted dark:text-white/70 mb-12 leading-relaxed font-sans font-light max-w-lg">
+                            Construída com precisão absoluta, nossa equipe focou na ergonomia e na fluidez do traço.
+                            Cada curva foi pensada para garantir uma comunicação magnética com o papel, assegurando um
+                            processo de escrita ou desenho que parece magia.
+                        </p>
+                        <div>
+                            <button
+                                class="px-8 py-4 border border-vibe-dark/20 dark:border-white/20 rounded-full font-sans font-medium text-xs tracking-wider text-vibe-dark dark:text-white hover:bg-vibe-dark hover:text-white dark:hover:bg-white dark:hover:text-vibe-dark transition-all duration-300 flex items-center gap-3 group shadow-sm">
+                                CONHEÇA O PROCESSO
+                                <iconify-icon icon="solar:arrow-right-linear"
+                                    class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 1: Escrevendo -->
+
+
+            </div>
+    </section>
+
+    <!-- Third Section - Benefícios (Dark Features Grid) -->
+    <section id="beneficios"
+        class="min-h-screen bg-vibe-main dark:bg-vibe-dark py-32 relative overflow-hidden text-vibe-dark dark:text-white border-t border-vibe-border dark:border-white/5 transition-colors duration-500">
+
+        <!-- Background Watermark -->
+        <div
+            class="absolute top-[10%] left-1/2 -translate-x-1/2 pointer-events-none select-none w-full flex justify-center">
+            <h2
+                class="text-[12rem] md:text-[18rem] lg:text-[22rem] font-display font-bold tracking-tighter text-vibe-dark/[0.03] dark:text-white/[0.03] leading-none whitespace-nowrap">
+                BENEFÍCIOS
+            </h2>
         </div>
+
+        <div class="max-w-[1400px] w-full mx-auto px-6 relative z-10 flex flex-col justify-center min-h-[70vh]">
+
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 gap-8">
+                <h2
+                    class="gsap-feat-header text-5xl md:text-6xl lg:text-7xl font-display font-medium text-vibe-dark dark:text-white max-w-2xl leading-[1.1]">
+                    O que faz dela<br />
+                    única.
+                </h2>
+                <div class="gsap-feat-header max-w-md pb-2">
+                    <p
+                        class="text-vibe-muted dark:text-white/60 font-sans text-lg md:text-xl leading-relaxed font-light">
+                        A Artools integrou ciência de materiais e design paramétrico para resolver problemas que você
+                        nem sabia que tinha ao escrever.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+
+                <!-- Card 1: Grafico -->
+                <div
+                    class="gsap-feat-card bg-white/50 dark:bg-black/40 backdrop-blur-md border border-vibe-border/50 dark:border-white/10 rounded-[2rem] p-6 lg:p-8 hover:bg-white dark:hover:bg-black/60 transition-colors duration-500 group flex flex-col shadow-lg shadow-vibe-dark/5 dark:shadow-black/20">
+
+                    <!-- Cover Art (CSS UI) -->
+                    <div
+                        class="h-48 md:h-56 w-full rounded-2xl bg-vibe-panel dark:bg-[#111111] border border-vibe-border dark:border-white/5 mb-8 overflow-hidden relative flex items-center justify-center p-6 transition-colors">
+                        <!-- Label -->
+                        <div
+                            class="absolute top-4 left-4 flex items-center gap-2 bg-vibe-dark/5 dark:bg-white/5 border border-vibe-dark/10 dark:border-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
+                            <div class="w-1.5 h-1.5 rounded-full bg-vibe-success shadow-[0_0_8px_rgba(0,204,102,0.8)]">
+                            </div>
+                            <span
+                                class="text-[9px] font-mono text-vibe-dark/80 dark:text-white/80 uppercase tracking-widest">Fluxo
+                                Constante</span>
+                        </div> <!-- Graph Line SVG -->
+                        <div class="w-full h-full relative mt-6">
+                            <svg viewBox="0 0 100 50" class="w-full h-full overflow-visible" preserveAspectRatio="none">
+                                <path d="M0,45 Q25,45 50,25 T100,5" fill="none" stroke="url(#card1-gradient)"
+                                    stroke-width="2"
+                                    class="group-hover:stroke-vibe-dark dark:group-hover:stroke-white transition-colors duration-700" />
+                                <circle cx="50" cy="25" r="2" fill="currentColor"
+                                    class="text-vibe-dark dark:text-white group-hover:scale-150 transition-transform origin-center" />
+                                <circle cx="100" cy="5" r="2" fill="currentColor"
+                                    class="text-vibe-dark dark:text-white group-hover:scale-150 transition-transform origin-center delay-75" />
+                                <defs>
+                                    <linearGradient id="card1-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="rgba(255,69,58,0.2)" />
+                                        <stop offset="100%" stop-color="rgba(255,69,58,1)" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Text -->
+                    <h3 class="text-2xl font-display font-medium text-vibe-dark dark:text-white mb-3 tracking-tight">
+                        Tinta Magnética</h3>
+                    <p
+                        class="text-vibe-muted dark:text-white/60 font-sans text-sm md:text-base leading-relaxed font-light">
+                        Nossa fórmula proprietária utiliza nanotecnologia para oferecer atrito zero. A tinta seca em
+                        impressionantes 0.3 segundos, impossibilitando borrões.
+                    </p>
+                </div>
+
+                <!-- Card 2: Timeline/Steps -->
+                <div
+                    class="gsap-feat-card bg-white/50 dark:bg-black/40 backdrop-blur-md border border-vibe-border/50 dark:border-white/10 rounded-[2rem] p-6 lg:p-8 hover:bg-white dark:hover:bg-black/60 transition-colors duration-500 group flex flex-col shadow-lg shadow-vibe-dark/5 dark:shadow-black/20">
+
+                    <!-- Cover Art (CSS UI) -->
+                    <div
+                        class="h-48 md:h-56 w-full rounded-2xl bg-vibe-panel dark:bg-[#111111] border border-vibe-border dark:border-white/5 mb-8 overflow-hidden relative flex flex-col justify-center gap-3 p-6 transition-colors">
+                        <!-- Step 1 -->
+                        <div class="w-full flex items-center gap-4 opacity-40">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-vibe-dark/5 dark:bg-white/5 border border-vibe-dark/10 dark:border-white/10 flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <div
+                                    class="text-[8px] font-mono text-vibe-dark/50 dark:text-white/50 uppercase tracking-wider mb-1">
+                                    Camada 1</div>
+                                <div class="text-sm rounded font-medium text-vibe-dark dark:text-white">Núcleo
+                                    Tungstênio</div>
+                            </div>
+                        </div>
+
+                        <!-- Connector -->
+                        <div class="w-8 flex justify-center py-1">
+                            <div class="w-[1px] h-3 bg-vibe-dark/10 dark:bg-white/10"></div>
+                        </div>>
+                        <!-- Step 2 (Active) -->
+                        <div
+                            class="w-full flex items-center gap-4 group-hover:translate-x-2 transition-transform duration-500 relative">
+                            <div
+                                class="absolute -left-6 w-1.5 h-1.5 rounded-full bg-vibe-danger shadow-[0_0_8px_rgba(255,69,58,0.8)]">
+                            </div>
+                            <div
+                                class="w-8 h-8 rounded-lg bg-vibe-danger/10 border border-vibe-danger/30 flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-[8px] font-mono text-vibe-danger uppercase tracking-wider mb-1">
+                                    Engenharia</div>
+                                <div class="text-sm rounded font-medium text-vibe-dark dark:text-white">Corpo em Titânio
+                                    Aero</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text -->
+                    <h3 class="text-2xl font-display font-medium text-vibe-dark dark:text-white mb-3 tracking-tight">
+                        Ergonomia Preditiva</h3>
+                    <p
+                        class="text-vibe-muted dark:text-white/60 font-sans text-sm md:text-base leading-relaxed font-light">
+                        Centro de gravidade movido em 2.4mm em direção à ponta, o que reduz a fadiga muscular da mão em
+                        até 34% durante sessões longas.
+                    </p>
+                </div>
+
+                <!-- Card 3: Grid Skeleton -->
+                <div
+                    class="gsap-feat-card bg-white/50 dark:bg-black/40 backdrop-blur-md border border-vibe-border/50 dark:border-white/10 rounded-[2rem] p-6 lg:p-8 hover:bg-white dark:hover:bg-black/60 transition-colors duration-500 group flex flex-col shadow-lg shadow-vibe-dark/5 dark:shadow-black/20">
+
+                    <!-- Cover Art (CSS UI) -->
+                    <div
+                        class="h-48 md:h-56 w-full rounded-2xl bg-vibe-panel dark:bg-[#111111] border border-vibe-border dark:border-white/5 mb-8 overflow-hidden relative flex items-center justify-center p-6 transition-colors">
+                        <div class="grid grid-cols-3 gap-2 w-full h-full max-w-[200px] max-h-[140px] opacity-80">
+                            <!-- Matrix of boxes -->
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5">
+                            </div>
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5 flex flex-col gap-1 p-2 justify-center">
+                                <div class="w-4 h-[2px] bg-vibe-dark/20 dark:bg-white/20 rounded"></div>
+                                <div class="w-8 h-[2px] bg-vibe-dark/10 dark:bg-white/10 rounded"></div>
+                            </div>
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5">
+                            </div>
+
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5">
+                            </div>
+                            <!-- Active Box -->
+                            <div
+                                class="bg-vibe-danger/5 rounded border border-vibe-danger/20 flex flex-col gap-1 p-2 justify-center relative group-hover:scale-105 transition-transform duration-500 shadow-[0_0_15px_rgba(255,69,58,0.1)]">
+                                <div class="w-4 h-[2px] bg-vibe-danger rounded"></div>
+                                <div class="w-10 h-[2px] bg-vibe-danger/50 rounded"></div>
+                                <div
+                                    class="absolute -right-1 -bottom-1 w-3 h-3 rounded-full bg-vibe-danger shadow-[0_0_8px_rgba(255,69,58,0.8)] border border-vibe-panel dark:border-[#0a0a0a]">
+                                </div>
+                            </div>
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5">
+                            </div>
+
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5 flex flex-col gap-1 p-2 justify-center">
+                                <div class="w-6 h-[2px] bg-vibe-dark/20 dark:bg-white/20 rounded"></div>
+                            </div>
+                            <div
+                                class="bg-vibe-dark/5 dark:bg-white/5 rounded border border-vibe-dark/5 dark:border-white/5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text -->
+                    <h3 class="text-2xl font-display font-medium text-vibe-dark dark:text-white mb-3 tracking-tight">
+                        Sistema Modular</h3>
+                    <p
+                        class="text-vibe-muted dark:text-white/60 font-sans text-sm md:text-base leading-relaxed font-light">
+                        Construa seu instrumento ideal. Componentes internos como molas de tensão, clipes e esferas da
+                        ponta são 100% substituíveis e customizáveis.
+                    </p>
+                </div>
+            </div>
+    </section>
+
+    <!-- Final Section - Early Access (Pre-sale) -->
+    <section id="early-access"
+        class="min-h-screen relative flex items-center justify-center overflow-hidden border-t border-vibe-border dark:border-white/5">
+
+        <!-- Video Background -->
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0" poster="">
+            <source src="assets/raw_files/Pen_spinning_on_white_background_delpmaspu_.mp4" type="video/mp4">
+        </video>
+
+        <!-- Overlay to ensure readability and match reference mood (Removed expensive blur over video) -->
+        <div class="absolute inset-0 bg-vibe-main/90 dark:bg-[#0a0a0a]/90 z-0 transition-colors duration-500"></div>
+
+        <!-- Center Card -->
+        <div
+            class="gsap-early-card relative z-10 w-[90%] max-w-[420px] bg-[#1a1a1a] rounded-[2rem] border border-white/10 p-10 flex flex-col items-center justify-center text-center shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden group">
+
+            <!-- Ambient Top Glow -->
+            <div
+                class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-white/20 blur-[40px] rounded-full mix-blend-screen opacity-50 pointer-events-none">
+            </div>
+
+            <!-- Icon -->
+            <div
+                class="w-14 h-14 bg-white rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(255,255,255,0.3)] relative z-10 transition-transform duration-500 group-hover:scale-110">
+                <iconify-icon icon="solar:crown-bold" class="text-2xl text-black"></iconify-icon>
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-3xl md:text-4xl font-display font-medium text-white mb-6 relative z-10 tracking-tight">
+                Artools<span class="text-white/40 font-light ml-1">Pro</span>
+            </h2>
+
+            <!-- Line Divider -->
+            <div class="w-16 h-[1px] bg-white/20 mb-6 relative z-10"></div>
+
+            <!-- Subtitle -->
+            <div class="text-[9px] font-mono tracking-[0.3em] text-white/50 uppercase mb-10 relative z-10">
+                SIGNATURE SERIES • 2026
+            </div>
+
+            <!-- Action Button -->
+            <button
+                class="bg-white text-black px-8 py-3.5 rounded-full font-sans font-medium text-sm flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:bg-gray-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] relative z-10">
+                Get Early Access
+                <iconify-icon icon="solar:arrow-right-linear" class="text-lg"></iconify-icon>
+            </button>
+        </div>
+
     </section>
 
     <script>
         // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             // 1. Initialize Lenis for Smooth Scrolling
             const lenis = new Lenis({
                 duration: 1.2,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 direction: 'vertical',
                 gestureDirection: 'vertical',
                 smooth: true,
@@ -402,42 +668,41 @@
                 requestAnimationFrame(raf);
             }
             requestAnimationFrame(raf);
-            
+
             // Connect GSAP ScrollTrigger to Lenis
             gsap.registerPlugin(ScrollTrigger);
-            
+
             lenis.on('scroll', ScrollTrigger.update);
 
-            gsap.ticker.add((time)=>{
-              lenis.raf(time * 1000);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
             });
-            gsap.ticker.lagSmoothing(0);
+            // Performance: gsapticker lagsmoothing removed to let requestAnimationFrame handle dynamic framerates natively.
 
-            // 2. Theme Toggle Logic
-            const themeToggle = document.getElementById('theme-toggle');
-            const darkIcon = document.querySelector('.dark-icon');
-            const lightIcon = document.querySelector('.light-icon');
-            
-            // Check system preference on load
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-mode');
-                darkIcon.classList.add('hidden');
-                lightIcon.classList.remove('hidden');
-            }
+            // Performance: Intersection Observer to pause off-screen videos
+            // Ignora o video fixo do Hero
+            const sectionVideos = document.querySelectorAll('section video');
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.play().catch(e => console.warn('Autoplay prevented', e));
+                    } else {
+                        entry.target.pause();
+                    }
+                });
+            }, { threshold: 0.1 });
 
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                darkIcon.classList.toggle('hidden');
-                lightIcon.classList.toggle('hidden');
-            });
+            sectionVideos.forEach(v => videoObserver.observe(v));
+
+
 
             // 3. SplitType for Text Reveal
             const textToSplit = new SplitType('.split-text', { types: 'lines, words, chars' });
-            
+
             // Keep outline classes on words handling
             const outlineWords = document.querySelectorAll('.outline-text .word');
             outlineWords.forEach(word => word.classList.add('outline-text', '!text-transparent'));
-            
+
             // Fix container overflow for clean reveals
             const lines = document.querySelectorAll('.line');
             lines.forEach(line => {
@@ -446,7 +711,7 @@
 
             // 4. Initial Entrance Animations (GSAP)
             const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-            
+
             // Label
             tl.to('.gsap-reveal-label', {
                 clipPath: 'polygon(0 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -454,109 +719,161 @@
                 duration: 1,
                 delay: 0.2
             })
-            // Headline Chars Stagger
-            .to('.char', {
-                y: 0,
-                stagger: 0.02,
-                duration: 1,
-                ease: "power3.out"
-            }, "-=0.8")
-            // Paragraph
-            .to('.gsap-reveal-para', {
-                y: 0,
-                opacity: 1,
-                duration: 1
-            }, "-=0.6")
-            // Buttons
-            .to('.gsap-reveal-btn', {
-                y: 0,
-                opacity: 1,
-                stagger: 0.1,
-                duration: 0.8
-            }, "-=0.6");
+                // Headline Chars Stagger
+                .to('.char', {
+                    y: 0,
+                    stagger: 0.02,
+                    duration: 1,
+                    ease: "power3.out"
+                }, "-=0.8")
+                // Paragraph
+                .to('.gsap-reveal-para', {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1
+                }, "-=0.6")
+                // Buttons
+                .to('.gsap-reveal-btn', {
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.1,
+                    duration: 0.8
+                }, "-=0.6");
 
             // Header Background on Scroll
             const header = document.querySelector('header');
             ScrollTrigger.create({
                 start: 'top -50',
                 end: 99999,
-                toggleClass: {className: 'shadow-md shadow-vibe-dark/5 dark:shadow-black/20', targets: header}
+                toggleClass: { className: 'shadow-md shadow-vibe-dark/5 dark:shadow-black/20', targets: header }
             });
 
-            // Fade out scroll indicator on scroll
-            gsap.to('#scroll-indicator', {
+            // 5. Hero Parallax & Fade (No Video Scrubbing)
+            const heroContent = document.getElementById('hero-content');
+            const headerEl = document.querySelector('header');
+
+            gsap.to(heroContent, {
                 scrollTrigger: {
-                    trigger: "#hero-content",
+                    trigger: "body",
                     start: "top top",
-                    end: "+=300",
+                    end: "300px top",
                     scrub: true
                 },
                 opacity: 0,
-                y: 50
+                y: -100,
+                willChange: "transform, opacity"
             });
 
-            // 5. Scroll-Controlled Video Logic (Full Screen Pinned Video Parallax)
-            const video = document.getElementById('scroll-video');
-            const videoContainer = document.getElementById('video-container');
-            const contentOverlay = document.getElementById('content-overlay');
-            const heroContent = document.getElementById('hero-content');
-            const scrollSpace = document.getElementById('scroll-space');
-            const headerEl = document.querySelector('header');
-            
-            video.addEventListener('loadedmetadata', function() {
-                
-                // Timeline for scrolling down
-                let scrollTl = gsap.timeline({
+            gsap.to(headerEl, {
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "50px top",
+                    end: "150px top",
+                    scrub: true
+                },
+                backgroundColor: 'rgba(28, 28, 28, 0.4)',
+                backdropFilter: 'blur(10px)',
+                borderBottomColor: 'rgba(255,255,255,0.1)'
+            });
+
+            // Otimização de Performance: Pausar e ocultar o vídeo inicial quando rolar para baixo
+            ScrollTrigger.create({
+                trigger: "#tecnologia",
+                start: "top bottom",
+                onEnter: () => {
+                    const bgVideo = document.getElementById('scroll-video');
+                    const bgContainer = document.getElementById('video-container');
+                    if (bgVideo) bgVideo.pause();
+                    if (bgContainer) bgContainer.style.visibility = 'hidden';
+                },
+                onLeaveBack: () => {
+                    const bgVideo = document.getElementById('scroll-video');
+                    const bgContainer = document.getElementById('video-container');
+                    if (bgVideo) bgVideo.play().catch(() => { });
+                    if (bgContainer) bgContainer.style.visibility = 'visible';
+                }
+            });
+
+            // 6. Section 2 (Tecnologia/Benefícios) Entrance Animations & Slider Logic
+            const sectionTec = document.getElementById('tecnologia');
+
+            // Fade in the whole section container on scroll
+            gsap.fromTo(sectionTec,
+                { opacity: 0, y: 100 },
+                {
                     scrollTrigger: {
-                        trigger: scrollSpace, // Scroll space trigger point
-                        start: "top top", // Starts when scrolling out of hero content
-                        end: "bottom bottom", 
-                        scrub: 1.5, // 1.5 for smoother video scrub mapping
-                    }
-                });
-
-                // 1. Fade OUT the hero content text immediately
-                scrollTl.to(heroContent, {
-                    opacity: 0,
-                    y: -100,
-                    duration: 0.2 // Quick fade out relative to scroll
-                }, 0);
-                
-                // 2. Reveal video container and make the background invisible
-                scrollTl.to(videoContainer, {
+                        trigger: sectionTec,
+                        start: "top 70%",
+                        end: "top 30%",
+                        toggleActions: "play none none reverse"
+                    },
                     opacity: 1,
-                    duration: 0.1
-                }, 0);
-                
-                scrollTl.to(contentOverlay, {
-                    opacity: 0,
-                    duration: 0.3
-                }, 0);
-                
-                // Header style change (force dark mode theme elements over full video)
-                scrollTl.to(headerEl, {
-                    // Slight visual tweak over the video
-                    borderBottomColor: 'rgba(255,255,255,0.1)',
-                    duration: 0.1
-                }, 0);
+                    y: 0,
+                    duration: 1.5,
+                    ease: "power3.out"
+                }
+            );
 
-                // 3. Scrub video through the remaining scroll distance
-                 const videoProxy = { currentTime: 0 };
-                 
-                 // Maps the remaining timeline to video duration
-                 scrollTl.to(videoProxy, {
-                    currentTime: video.duration,
-                    ease: "none",
-                    onUpdate: function() {
-                        if (video.readyState >= 1) { 
-                            video.currentTime = videoProxy.currentTime;
-                        }
-                    }
-                }, ">"); // Start right after the reveal animations
-            });
-            
-            video.load();
+
+
+            // 7. Section 3 (Benefícios/Features) Animations
+            const sectionBen = document.getElementById('beneficios');
+
+            // Header
+            gsap.fromTo('.gsap-feat-header',
+                { opacity: 0, y: 50 },
+                {
+                    scrollTrigger: {
+                        trigger: sectionBen,
+                        start: "top 70%",
+                        toggleActions: "play none none reverse"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.2,
+                    duration: 1.2,
+                    ease: "power3.out"
+                }
+            );
+
+            // Cards Stagger
+            gsap.fromTo('.gsap-feat-card',
+                { opacity: 0, y: 60, scale: 0.95 },
+                {
+                    scrollTrigger: {
+                        trigger: sectionBen,
+                        start: "top 50%",
+                        toggleActions: "play none none reverse"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    stagger: 0.15,
+                    duration: 1.2,
+                    ease: "back.out(1.2)"
+                }
+            );
+
+            // 8. Section 4 (Early Access) Animations
+            const sectionEarly = document.getElementById('early-access');
+
+            gsap.fromTo('.gsap-early-card',
+                { opacity: 0, scale: 0.9, y: 50 },
+                {
+                    scrollTrigger: {
+                        trigger: sectionEarly,
+                        start: "top 60%",
+                        toggleActions: "play none none reverse"
+                    },
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    duration: 1.5,
+                    ease: "power4.out"
+                }
+            );
         });
     </script>
 </body>
+
 </html>
